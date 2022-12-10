@@ -26,10 +26,10 @@ namespace Laba_4
     public class Circle
     {
         private const int RADIX = 40;
-        public Point location;
+        private Point location;
         private bool detail;
         public int number;
-        List<int> vershin;
+        public List<int> vershin;
         public Circle(Point location, int number)
         {
             this.location = location;
@@ -57,7 +57,7 @@ namespace Laba_4
 
             foreach(var num in vershin)
             {
-                e.Graphics.DrawLine(new Pen(Color.Blue, 1f), location,
+                e.Graphics.DrawLine(new Pen(Color.Blue, 3f), location,
                     s[num].location);
             }
 

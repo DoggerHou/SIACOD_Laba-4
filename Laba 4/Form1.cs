@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Laba_4
 {
     public partial class Form1 : Form
     {
-        List<Circle> storage;
-        bool controlUp;
-        int[,] arr;
-        int versh = -1;
+        List<Circle> storage; //массив объектов(вершин)
+        bool controlUp;//Зажата ли кнопка ctrl
+        int[,] arr;//Матрица смежности
+        int versh = -1;//для запоминания выбранной вершины
+        Stack<int> tempStack = new Stack<int>();//Временный стек
+        List<int> resultList = new List<int>(); // Результирующий Список
         public Form1()
         {
             InitializeComponent();
@@ -26,6 +22,24 @@ namespace Laba_4
         //Нажатие кнопки "Получить матрицу"
         private void button1_Click(object sender, EventArgs e)
         {
+            //Заполняем матрицу смежности
+            for(int j = 0;j<storage.Count;j++)
+            {
+                var l = storage[j].vershin;
+                for(int i = 0; i < l.Count; i++)
+                {
+                    arr[j, l[i]] = 1;
+                }
+            }
+
+            for(int i=0;i<storage.Count;i++)
+                for(int j = 0; j < storage.Count; j++)
+                    if (arr[i, j] == 1 || arr[j,i] == 1)
+                    {
+                        arr[j, i] = 1;
+                        arr[i, j] = 1;
+                    }
+
             //Заполняем DataGrid значениями из массива
             dataGridView1.RowCount = storage.Count + 1;
             dataGridView1.ColumnCount = storage.Count + 1;
@@ -51,6 +65,7 @@ namespace Laba_4
         //Нажатие мыши
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
+            //добавление ребер
             if(e.Button == MouseButtons.Right)
             {
                 if(versh == -1)
@@ -73,15 +88,13 @@ namespace Laba_4
                         }
                     if((toversh != -1) && (versh != toversh))
                     {
-                        arr[versh, toversh] = 1;
-                        arr[toversh, versh] = 1;
                         storage[versh].addVershin(toversh);
                         versh = -1;
                     }
                 }
             }
 
-
+            //Добавление вершин
             if (e.Button == MouseButtons.Left)
             {
                 if (controlUp)
@@ -122,6 +135,45 @@ namespace Laba_4
             controlUp = false;
         }
 
+
+        //Нажатие кнопки "Обход в глубину"
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //dfs(0)   //Рекурсивный алгоритм
+            dfs2();    //Нерекурсивный алгоритм
+            foreach (var obj in resultList)
+            {
+                label1.Text += obj.ToString() + " ";
+            }
+        }
+
+        //Рекурсивный поиск в глубину
+        private void dfs(int v)
+        {
+            resultList.Add(v);
+            for(int i = 0; i < storage.Count; i++)
+            {
+                if (!resultList.Contains(i) && arr[v, i] == 1)
+                    dfs(i);
+            }
+        }
+
+        //НЕ рекурсивный поиск в глубину
+        private void dfs2()
+        {
+            tempStack.Push(0);
+            while(tempStack.Count > 0)
+            {
+                int v = tempStack.Pop();
+                if (!resultList.Contains(v))
+                {
+                    resultList.Add(v);
+                    for (int i = 0; i < storage.Count; i++)
+                        if (arr[v, i] == 1 && !resultList.Contains(i))
+                            tempStack.Push(i);
+                }
+            }
+        }
 
     }
 }
