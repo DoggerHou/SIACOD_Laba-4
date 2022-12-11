@@ -12,6 +12,8 @@ namespace Laba_4
         int versh = -1;//для запоминания выбранной вершины
         Stack<int> tempStack = new Stack<int>();//Временный стек
         List<int> resultList = new List<int>(); // Результирующий Список
+        Queue<int> tempQueue = new Queue<int>();//Временная очередь
+        List<int> rgr = new List<int>();//Для ргр
         public Form1()
         {
             InitializeComponent();
@@ -54,6 +56,27 @@ namespace Laba_4
                 for (int j = 1; j <= storage.Count; j++)
                     dataGridView1[i, j].Value = arr[i - 1, j - 1];
         }
+
+
+        //Нажатие кнопки "Обход в глубину"
+        private void button2_Click(object sender, EventArgs e)
+        {
+            dfs(0);   //Рекурсивный алгоритм
+            //dfs2();    //Нерекурсивный алгоритм
+            foreach (var obj in resultList)
+                label1.Text += obj.ToString() + " ";
+        }
+
+
+        //Обработка кнопки "Задание на РГР"
+        private void button3_Click(object sender, EventArgs e)
+        {
+            bfs(0, 2);
+            rgr.RemoveAll(item => item == 0);
+            foreach (var obj in rgr)
+                label1.Text += obj.ToString() + " ";
+        }
+
 
         //Отрисовка формы
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
@@ -112,7 +135,7 @@ namespace Laba_4
             pictureBox1.Invalidate();
         }
 
-        //нажатие кнопки
+        //Обработка нажатий на клавиатуру
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Control)
@@ -135,17 +158,6 @@ namespace Laba_4
             controlUp = false;
         }
 
-
-        //Нажатие кнопки "Обход в глубину"
-        private void button2_Click(object sender, EventArgs e)
-        {
-            //dfs(0)   //Рекурсивный алгоритм
-            dfs2();    //Нерекурсивный алгоритм
-            foreach (var obj in resultList)
-            {
-                label1.Text += obj.ToString() + " ";
-            }
-        }
 
         //Рекурсивный поиск в глубину
         private void dfs(int v)
@@ -175,5 +187,34 @@ namespace Laba_4
             }
         }
 
+
+        //Поиск в ширину для РГР
+        private void bfs(int versh, int kol)
+        {
+            tempQueue.Enqueue(versh);
+            int k = 0;
+            while (tempQueue.Count > 0)
+            {
+                k++;
+                if(k == kol)
+                {
+                    foreach (var vv in tempQueue)
+                        for (int i = 0; i < storage.Count; i++)
+                            if (arr[vv, i] == 1)
+                                rgr.Add(i);
+                }
+
+                int v = tempQueue.Dequeue();
+                if (!resultList.Contains(v))
+                {
+                    resultList.Add(v);
+                    for (int i = 0; i < storage.Count; i++)
+                    {
+                        if (arr[v, i] == 1 && !resultList.Contains(i))
+                            tempQueue.Enqueue(i);
+                    }
+                }
+            }
+        }
     }
 }
