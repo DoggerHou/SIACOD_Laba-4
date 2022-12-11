@@ -25,18 +25,18 @@ namespace Laba_4
         private void button1_Click(object sender, EventArgs e)
         {
             //Заполняем матрицу смежности
-            for(int j = 0;j<storage.Count;j++)
+            for (int j = 0; j < storage.Count; j++)
             {
                 var l = storage[j].vershin;
-                for(int i = 0; i < l.Count; i++)
+                for (int i = 0; i < l.Count; i++)
                 {
                     arr[j, l[i]] = 1;
                 }
             }
 
-            for(int i=0;i<storage.Count;i++)
-                for(int j = 0; j < storage.Count; j++)
-                    if (arr[i, j] == 1 || arr[j,i] == 1)
+            for (int i = 0; i < storage.Count; i++)
+                for (int j = 0; j < storage.Count; j++)
+                    if (arr[i, j] == 1 || arr[j, i] == 1)
                     {
                         arr[j, i] = 1;
                         arr[i, j] = 1;
@@ -46,7 +46,7 @@ namespace Laba_4
             dataGridView1.RowCount = storage.Count + 1;
             dataGridView1.ColumnCount = storage.Count + 1;
 
-            for(int i = 0;i< storage.Count; i++)
+            for (int i = 0; i < storage.Count; i++)
             {
                 dataGridView1[0, i + 1].Value = i;
                 dataGridView1[i + 1, 0].Value = i;
@@ -64,17 +64,17 @@ namespace Laba_4
             dfs(0);   //Рекурсивный алгоритм
             //dfs2();    //Нерекурсивный алгоритм
             foreach (var obj in resultList)
-                label1.Text += obj.ToString() + " ";
+                textBox1.Text += obj.ToString() + " ";
         }
 
 
         //Обработка кнопки "Задание на РГР"
         private void button3_Click(object sender, EventArgs e)
         {
-            bfs(0, 2);
-            rgr.RemoveAll(item => item == 0);
+            bfs(Int32.Parse(textBox2.Text), Int32.Parse(textBox3.Text));
+            rgr.RemoveAll(item => item == Int32.Parse(textBox2.Text));
             foreach (var obj in rgr)
-                label1.Text += obj.ToString() + " ";
+                textBox1.Text += obj.ToString() + " ";
         }
 
 
@@ -89,11 +89,11 @@ namespace Laba_4
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
             //добавление ребер
-            if(e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
             {
-                if(versh == -1)
+                if (versh == -1)
                 {
-                    for(int i = 0; i < storage.Count; i++)
+                    for (int i = 0; i < storage.Count; i++)
                         if (storage[i].isPicked(e, controlUp))
                         {
                             versh = i;
@@ -109,7 +109,7 @@ namespace Laba_4
                             toversh = i;
                             break;
                         }
-                    if((toversh != -1) && (versh != toversh))
+                    if ((toversh != -1) && (versh != toversh))
                     {
                         storage[versh].addVershin(toversh);
                         versh = -1;
@@ -163,7 +163,7 @@ namespace Laba_4
         private void dfs(int v)
         {
             resultList.Add(v);
-            for(int i = 0; i < storage.Count; i++)
+            for (int i = 0; i < storage.Count; i++)
             {
                 if (!resultList.Contains(i) && arr[v, i] == 1)
                     dfs(i);
@@ -174,7 +174,7 @@ namespace Laba_4
         private void dfs2()
         {
             tempStack.Push(0);
-            while(tempStack.Count > 0)
+            while (tempStack.Count > 0)
             {
                 int v = tempStack.Pop();
                 if (!resultList.Contains(v))
@@ -196,11 +196,11 @@ namespace Laba_4
             while (tempQueue.Count > 0)
             {
                 k++;
-                if(k == kol)
+                if (k == kol)
                 {
                     foreach (var vv in tempQueue)
                         for (int i = 0; i < storage.Count; i++)
-                            if (arr[vv, i] == 1)
+                            if (arr[vv, i] == 1 && !rgr.Contains(i))
                                 rgr.Add(i);
                 }
 
