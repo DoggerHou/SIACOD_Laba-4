@@ -48,8 +48,8 @@ namespace Laba_4
 
             for (int i = 0; i < storage.Count; i++)
             {
-                dataGridView1[0, i + 1].Value = i;
-                dataGridView1[i + 1, 0].Value = i;
+                dataGridView1[0, i + 1].Value = i+1;
+                dataGridView1[i + 1, 0].Value = i+1;
             }
 
             for (int i = 1; i <= storage.Count; i++)
@@ -61,20 +61,20 @@ namespace Laba_4
         //Нажатие кнопки "Обход в глубину"
         private void button2_Click(object sender, EventArgs e)
         {
-            dfs(0);   //Рекурсивный алгоритм
-            //dfs2();    //Нерекурсивный алгоритм
+            //dfs(0);   //Рекурсивный алгоритм
+            dfs2();    //Нерекурсивный алгоритм
             foreach (var obj in resultList)
-                textBox1.Text += obj.ToString() + " ";
+                textBox1.Text += (obj+1).ToString() + " ";
         }
 
 
         //Обработка кнопки "Задание на РГР"
         private void button3_Click(object sender, EventArgs e)
         {
-            bfs(Int32.Parse(textBox2.Text), Int32.Parse(textBox3.Text));
+            bfs(Int32.Parse(textBox2.Text) -1, Int32.Parse(textBox3.Text));
             rgr.RemoveAll(item => item == Int32.Parse(textBox2.Text));
             foreach (var obj in rgr)
-                textBox1.Text += obj.ToString() + " ";
+                textBox1.Text += (obj+1).ToString() + " ";
         }
 
 
@@ -180,7 +180,7 @@ namespace Laba_4
                 if (!resultList.Contains(v))
                 {
                     resultList.Add(v);
-                    for (int i = 0; i < storage.Count; i++)
+                    for (int i = storage.Count - 1; i >= 0; i--) 
                         if (arr[v, i] == 1 && !resultList.Contains(i))
                             tempStack.Push(i);
                 }

@@ -52,7 +52,7 @@ namespace Laba_4
             else
                 e.Graphics.DrawEllipse(new Pen(Color.Red, 3f), location.X - RADIX / 2, location.Y - RADIX / 2, RADIX, RADIX);
 
-            e.Graphics.DrawString(number.ToString(), new Font("Arial", 20, FontStyle.Regular),
+            e.Graphics.DrawString((number+1).ToString(), new Font("Arial", 20, FontStyle.Regular),
                 Brushes.Red, location.X + 5 - RADIX / 2, 3 + location.Y - RADIX / 2);
 
             foreach(var num in vershin)
