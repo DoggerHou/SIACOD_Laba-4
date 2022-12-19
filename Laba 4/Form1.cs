@@ -9,11 +9,13 @@ namespace Laba_4
         List<Circle> storage; //массив объектов(вершин)
         bool controlUp;//Зажата ли кнопка ctrl
         int[,] arr;//Матрица смежности
+        int[,] arr2;//Матрица смежности
+        int[,] arr3;//Матрица смежности
         int versh = -1;//для запоминания выбранной вершины
         Stack<int> tempStack = new Stack<int>();//Временный стек
         List<int> resultList = new List<int>(); // Результирующий Список
-        Queue<int> tempQueue = new Queue<int>();//Временная очередь
         List<int> rgr = new List<int>();//Для ргр
+        int kk;
         public Form1()
         {
             InitializeComponent();
@@ -21,69 +23,6 @@ namespace Laba_4
             storage = new List<Circle>();
         }
 
-        //Нажатие кнопки "Получить матрицу"
-        private void button1_Click(object sender, EventArgs e)
-        {
-            //Заполняем матрицу смежности
-            for (int j = 0; j < storage.Count; j++)
-            {
-                var l = storage[j].vershin;
-                for (int i = 0; i < l.Count; i++)
-                {
-                    arr[j, l[i]] = 1;
-                }
-            }
-
-            for (int i = 0; i < storage.Count; i++)
-                for (int j = 0; j < storage.Count; j++)
-                    if (arr[i, j] == 1 || arr[j, i] == 1)
-                    {
-                        arr[j, i] = 1;
-                        arr[i, j] = 1;
-                    }
-
-            //Заполняем DataGrid значениями из массива
-            dataGridView1.RowCount = storage.Count + 1;
-            dataGridView1.ColumnCount = storage.Count + 1;
-
-            for (int i = 0; i < storage.Count; i++)
-            {
-                dataGridView1[0, i + 1].Value = i+1;
-                dataGridView1[i + 1, 0].Value = i+1;
-            }
-
-            for (int i = 1; i <= storage.Count; i++)
-                for (int j = 1; j <= storage.Count; j++)
-                    dataGridView1[i, j].Value = arr[i - 1, j - 1];
-        }
-
-
-        //Нажатие кнопки "Обход в глубину"
-        private void button2_Click(object sender, EventArgs e)
-        {
-            //dfs(0);   //Рекурсивный алгоритм
-            dfs2();    //Нерекурсивный алгоритм
-            foreach (var obj in resultList)
-                textBox1.Text += (obj+1).ToString() + " ";
-        }
-
-
-        //Обработка кнопки "Задание на РГР"
-        private void button3_Click(object sender, EventArgs e)
-        {
-            bfs(Int32.Parse(textBox2.Text) -1, Int32.Parse(textBox3.Text));
-            rgr.RemoveAll(item => item == Int32.Parse(textBox2.Text));
-            foreach (var obj in rgr)
-                textBox1.Text += (obj+1).ToString() + " ";
-        }
-
-
-        //Отрисовка формы
-        private void pictureBox1_Paint(object sender, PaintEventArgs e)
-        {
-            foreach (var obj in storage)
-                obj.OnPaint(e, storage);
-        }
 
         //Нажатие мыши
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -135,6 +74,76 @@ namespace Laba_4
             pictureBox1.Invalidate();
         }
 
+
+        //Отрисовка формы
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            foreach (var obj in storage)
+                obj.OnPaint(e, storage);
+        }
+
+        //Нажатие кнопки "Получить матрицу"
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //Заполняем матрицу смежности
+            for (int j = 0; j < storage.Count; j++)
+            {
+                var l = storage[j].vershin;
+                for (int i = 0; i < l.Count; i++)
+                {
+                    arr[j, l[i]] = 1;
+                }
+            }
+
+            for (int i = 0; i < storage.Count; i++)
+                for (int j = 0; j < storage.Count; j++)
+                    if (arr[i, j] == 1 || arr[j, i] == 1)
+                    {
+                        arr[j, i] = 1;
+                        arr[i, j] = 1;
+                    }
+
+            //Заполняем DataGrid значениями из массива
+            dataGridView1.RowCount = storage.Count + 1;
+            dataGridView1.ColumnCount = storage.Count + 1;
+
+            for (int i = 0; i < storage.Count; i++)
+            {
+                dataGridView1[0, i + 1].Value = i+1;
+                dataGridView1[i + 1, 0].Value = i+1;
+            }
+
+            for (int i = 1; i <= storage.Count; i++)
+                for (int j = 1; j <= storage.Count; j++)
+                    dataGridView1[i, j].Value = arr[i - 1, j - 1];
+        }
+
+
+        //Нажатие кнопки "Обход в глубину"
+        private void button2_Click(object sender, EventArgs e)
+        {
+            dfs();    //Нерекурсивный алгоритм
+            foreach (var obj in resultList)
+                textBox1.Text += (obj+1).ToString() + " ";
+        }
+
+
+        //Обработка кнопки "Задание на РГР"
+        private void button3_Click(object sender, EventArgs e)
+        {
+            arr2 = arr.Clone() as int[,];
+            for (int i = 0; i < int.Parse(textBox3.Text) - 1;i++)
+                arr2 = MultiplicationMatrixD(arr2, arr);
+
+            for(int i = 0; i < storage.Count; i++)
+            {
+                if(arr2[int.Parse(textBox2.Text) - 1, i] >= 1)
+                    textBox1.Text += (i + 1).ToString() + " ";
+            }
+
+        }
+
+
         //Обработка нажатий на клавиатуру
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -158,20 +167,8 @@ namespace Laba_4
             controlUp = false;
         }
 
-
-        //Рекурсивный поиск в глубину
-        private void dfs(int v)
-        {
-            resultList.Add(v);
-            for (int i = 0; i < storage.Count; i++)
-            {
-                if (!resultList.Contains(i) && arr[v, i] == 1)
-                    dfs(i);
-            }
-        }
-
         //НЕ рекурсивный поиск в глубину
-        private void dfs2()
+        private void dfs()
         {
             tempStack.Push(0);
             while (tempStack.Count > 0)
@@ -188,33 +185,20 @@ namespace Laba_4
         }
 
 
-        //Поиск в ширину для РГР
-        private void bfs(int versh, int kol)
+        private int[,] MultiplicationMatrixD(int[,] a, int[,] b)
         {
-            tempQueue.Enqueue(versh);
-            int k = 0;
-            while (tempQueue.Count > 0)
+            int[,] r = new int[storage.Count, storage.Count];
+            for (int i = 0; i < storage.Count; i++)
             {
-                k++;
-                if (k == kol)
+                for (int j = 0; j < storage.Count; j++)
                 {
-                    foreach (var vv in tempQueue)
-                        for (int i = 0; i < storage.Count; i++)
-                            if (arr[vv, i] == 1 && !rgr.Contains(i))
-                                rgr.Add(i);
-                }
-
-                int v = tempQueue.Dequeue();
-                if (!resultList.Contains(v))
-                {
-                    resultList.Add(v);
-                    for (int i = 0; i < storage.Count; i++)
+                    for (int k = 0; k < storage.Count; k++)
                     {
-                        if (arr[v, i] == 1 && !resultList.Contains(i))
-                            tempQueue.Enqueue(i);
+                        r[i, j] += a[i, k] * b[k, j];
                     }
                 }
             }
+            return r;
         }
     }
 }
