@@ -119,15 +119,6 @@ namespace Laba_4
         }
 
 
-        //Нажатие кнопки "Обход в глубину"
-        private void button2_Click(object sender, EventArgs e)
-        {
-            dfs();    //Нерекурсивный алгоритм
-            foreach (var obj in resultList)
-                textBox1.Text += (obj+1).ToString() + " ";
-        }
-
-
         //Обработка кнопки "Задание на РГР"
         private void button3_Click(object sender, EventArgs e)
         {
@@ -165,23 +156,6 @@ namespace Laba_4
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
             controlUp = false;
-        }
-
-        //НЕ рекурсивный поиск в глубину
-        private void dfs()
-        {
-            tempStack.Push(0);
-            while (tempStack.Count > 0)
-            {
-                int v = tempStack.Pop();
-                if (!resultList.Contains(v))
-                {
-                    resultList.Add(v);
-                    for (int i = storage.Count - 1; i >= 0; i--) 
-                        if (arr[v, i] == 1 && !resultList.Contains(i))
-                            tempStack.Push(i);
-                }
-            }
         }
 
 
