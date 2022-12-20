@@ -10,12 +10,7 @@ namespace Laba_4
         bool controlUp;//Зажата ли кнопка ctrl
         int[,] arr;//Матрица смежности
         int[,] arr2;//Матрица смежности
-        int[,] arr3;//Матрица смежности
         int versh = -1;//для запоминания выбранной вершины
-        Stack<int> tempStack = new Stack<int>();//Временный стек
-        List<int> resultList = new List<int>(); // Результирующий Список
-        List<int> rgr = new List<int>();//Для ргр
-        int kk;
         public Form1()
         {
             InitializeComponent();
@@ -131,7 +126,6 @@ namespace Laba_4
                 if(arr2[int.Parse(textBox2.Text) - 1, i] >= 1)
                     textBox1.Text += (i + 1).ToString() + " ";
             }
-
         }
 
 
